@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML Diagram Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .fade-in {
+            animation: fadeIn 1s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        /* Dark mode transitions */
+        .transition-colors {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* Custom scrollbar for code block */
+        pre::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        pre::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .dark pre::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        pre::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 4px;
+        }
+        .dark pre::-webkit-scrollbar-thumb {
+            background: #4a5568;
+        }
+        pre::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+        .dark pre::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 transition-colors" id="body">
+    <!-- Dark Mode Toggle -->
+    <div class="fixed top-4 right-4 z-10">
+        <button id="darkModeToggle" class="bg-gray-200 dark:bg-gray-700 rounded-full p-2 shadow-md hover:shadow-lg transition-all">
+            <!-- Sun icon (visible in dark mode) -->
+            <svg id="lightIcon" class="w-6 h-6 text-yellow-500 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
+            </svg>
+            <!-- Moon icon (visible in light mode) -->
+            <svg id="darkIcon" class="w-6 h-6 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+            </svg>
+        </button>
+    </div>
+
+    <div class="max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <div class="text-center mb-10">
+            <h1 class="text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-2 transition-colors">UML Diagram Generator</h1>
+            <p class="text-gray-600 dark:text-gray-400 transition-colors">Create professional UML diagrams with ease</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Input Form Section -->
+            <div class="lg:col-span-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors">
+                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 transition-colors">Configuration</h2>
+                <form id="diagramForm" class="space-y-6">
+                    <div>
+                        <label for="project_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Project Name</label>
+                        <input type="text" id="project_name" name="project_name" required
+                               class="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors">
+                    </div>
+                    
+                    <div>
+                        <label for="diagram_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Diagram Type</label>
+                        <div class="relative">
+                            <select id="diagram_type" name="diagram_type" required
+                                    class="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 appearance-none transition-colors">
+                                {% for type in diagram_types %}
+                                <option value="{{ type }}">{{ type }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div>
+                        <label for="theme" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Theme</label>
+                        <div class="relative">
+                            <select id="theme" name="theme"
+                                    class="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 appearance-none transition-colors">
+                                <option value="">Default Theme</option>
+                                {% for theme in themes %}
+                                <option value="{{ theme }}">{{ theme }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-[1.02]">
+                        <div class="flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            Generate Diagram
+                        </div>
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Results Section -->
+            <div id="results" class="lg:col-span-8 space-y-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 space-y-4 md:space-y-0">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 transition-colors">Generated Diagram</h2>
+                        <button id="downloadButton" 
+                                class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-[1.02] flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Download Diagram
+                        </button>
+                    </div>
+                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 flex items-center justify-center transition-colors">
+                        <img id="diagram" class="max-w-full h-auto fade-in rounded-lg shadow-md" alt="Generated UML Diagram">
+                    </div>
+                </div>
+                
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors">
+                    <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 space-y-4 md:space-y-0">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 transition-colors">PlantUML Syntax</h2>
+                        <button id="copyButton" 
+                                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-[1.02] flex items-center justify-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                            </svg>
+                            Copy Code
+                        </button>
+                    </div>
+                    <pre id="syntax" class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-300 p-6 rounded-lg overflow-x-auto shadow-inner border border-gray-200 dark:border-gray-700 transition-colors font-mono text-sm"></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading indicator -->
+        <div id="loading" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 max-w-sm w-full flex flex-col items-center transition-colors">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 dark:border-indigo-400 mb-4"></div>
+                <span class="text-gray-700 dark:text-gray-300 text-lg font-medium">Generating diagram...</span>
+            </div>
+        </div>
+
+        <!-- Error message -->
+        <div id="error" class="hidden fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:bottom-8 md:-translate-x-1/2 bg-red-500 text-white p-4 rounded-lg shadow-lg max-w-md z-50">
+            <div class="flex items-start">
+                <svg class="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span id="errorMessage" class="flex-1"></span>
+                <button class="ml-4 text-white focus:outline-none" onclick="document.getElementById('error').classList.add('hidden')">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Success Pop-up Messages -->
+        <div id="message" class="hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg max-w-md z-50 animate-bounce">
+            <div class="flex items-center">
+                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span id="messageText" class="flex-1"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark mode toggle functionality
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.getElementById('body');
+        const darkIcon = document.getElementById('darkIcon');
+        const lightIcon = document.getElementById('lightIcon');
+        
+        // Check for saved user preference or use system preference
+        const isDarkMode = localStorage.getItem('darkMode') === 'true' || 
+                          (localStorage.getItem('darkMode') === null && 
+                           window.matchMedia('(prefers-color-scheme: dark)').matches);
+        
+        // Initialize dark mode based on preference
+        if (isDarkMode) {
+            enableDarkMode();
+        }
+        
+        // Toggle dark mode
+        darkModeToggle.addEventListener('click', () => {
+            if (body.classList.contains('dark')) {
+                disableDarkMode();
+            } else {
+                enableDarkMode();
+            }
+        });
+        
+        function enableDarkMode() {
+            body.classList.add('dark');
+            body.classList.add('bg-gray-900');
+            darkIcon.classList.add('hidden');
+            lightIcon.classList.remove('hidden');
+            localStorage.setItem('darkMode', 'true');
+        }
+        
+        function disableDarkMode() {
+            body.classList.remove('dark');
+            body.classList.remove('bg-gray-900');
+            body.classList.add('bg-gray-100');
+            darkIcon.classList.remove('hidden');
+            lightIcon.classList.add('hidden');
+            localStorage.setItem('darkMode', 'false');
+        }
+
+        // Form submission handler
+        document.getElementById('diagramForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const results = document.getElementById('results');
+            const message = document.getElementById('message');
+            const messageText = document.getElementById('messageText');
+            
+            // Show loading, hide other sections
+            loading.classList.remove('hidden');
+            error.classList.add('hidden');
+            
+            try {
+                const formData = new FormData(e.target);
+                const response = await fetch('/generate', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Update diagram and syntax
+                    document.getElementById('diagram').src = `data:image/png;base64,${data.diagram}`;
+                    document.getElementById('syntax').textContent = data.syntax;
+                    results.classList.remove('hidden');
+                    messageText.textContent = "Diagram generated successfully!";
+                    message.classList.remove('hidden');
+                    setTimeout(() => message.classList.add('hidden'), 3000);
+                } else {
+                    throw new Error(data.error || 'Failed to generate diagram');
+                }
+            } catch (err) {
+                error.classList.remove('hidden');
+                document.getElementById('errorMessage').textContent = err.message;
+            } finally {
+                loading.classList.add('hidden');
+            }
+        });
+
+        // Copy PlantUML code button
+        document.getElementById('copyButton').addEventListener('click', async () => {
+            const syntax = document.getElementById('syntax').textContent;
+            try {
+                await navigator.clipboard.writeText(syntax);
+                const button = document.getElementById('copyButton');
+                const originalHTML = button.innerHTML;
+                button.innerHTML = `
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Copied!
+                `;
+                button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                button.classList.add('bg-green-600', 'hover:bg-green-700');
+                setTimeout(() => {
+                    button.innerHTML = originalHTML;
+                    button.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    button.classList.add('bg-blue-600', 'hover:bg-blue-700');
+                }, 2000);
+                
+                // Show success message
+                const message = document.getElementById('message');
+                const messageText = document.getElementById('messageText');
+                messageText.textContent = "Code copied to clipboard!";
+                message.classList.remove('hidden');
+                setTimeout(() => message.classList.add('hidden'), 3000);
+            } catch (err) {
+                console.error('Failed to copy text:', err);
+            }
+        });
+
+        // Download diagram button
+        document.getElementById('downloadButton').addEventListener('click', () => {
+            const img = document.getElementById('diagram');
+            const link = document.createElement('a');
+            link.download = 'diagram.png';
+            link.href = img.src;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            // Show success message
+            const message = document.getElementById('message');
+            const messageText = document.getElementById('messageText');
+            messageText.textContent = "Diagram downloaded successfully!";
+            message.classList.remove('hidden');
+            setTimeout(() => message.classList.add('hidden'), 3000);
+        });
+    </script>
+</body>
+</html>

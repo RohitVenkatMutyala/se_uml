@@ -1,0 +1,6 @@
+Flask
+g4f
+plantuml
+python-dotenv
+requests
+Werkzeug
