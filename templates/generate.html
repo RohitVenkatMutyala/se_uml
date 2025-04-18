@@ -3,20 +3,250 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UML Diagram Generator</title>
+    
+    <title>UML Diagram </title>
+   
+
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap');
+        
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-pink: #ff2a6d;
+            --dark-bg: #05070f;
+            --darker-bg: #020308;
+            --neon-blue-glow: 0 0 10px #00f0ff, 0 0 20px rgba(0, 240, 255, 0.5);
+            --neon-pink-glow: 0 0 10px #ff2a6d, 0 0 20px rgba(255, 42, 109, 0.5);
+        }
+        
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 240, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 42, 109, 0.05) 0%, transparent 20%);
+            color: white;
+        }
+        
+        .cyberpunk-border {
+            position: relative;
+            border: 1px solid var(--neon-blue);
+            box-shadow: var(--neon-blue-glow);
+        }
+        
+        .cyberpunk-border-pink {
+            position: relative;
+            border: 1px solid var(--neon-pink);
+            box-shadow: var(--neon-pink-glow);
+        }
+        
+        .cyberpunk-btn {
+            background-color: transparent;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--neon-blue-glow);
+        }
+        
+        .cyberpunk-btn:hover {
+            background-color: rgba(0, 240, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px #00f0ff, 0 0 30px rgba(0, 240, 255, 0.7);
+        }
+        
+        .cyberpunk-btn-pink {
+            background-color: transparent;
+            border: 1px solid var(--neon-pink);
+            color: var(--neon-pink);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: var(--neon-pink-glow);
+        }
+        /* Light mode with normal colors */
+        body.light-mode {
+        font-family: 'Orbitron', sans-serif;
+        background-color: #ffffff;
+        background-image: none;
+        color: #333333;
+        }
+        
+        body.light-mode .cyberpunk-border {
+        border: 1px solid #dddddd;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .cyberpunk-border-pink {
+        border: 1px solid #dddddd;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .cyberpunk-btn {
+        border: 1px solid #4a6fa5;
+        color: #4a6fa5;
+        box-shadow: none;
+        background-color: #f5f8ff;
+        }
+        
+        body.light-mode .cyberpunk-btn:hover {
+        background-color: #e6eeff;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+        }
+        
+        body.light-mode .cyberpunk-btn-pink {
+        border: 1px solid #d64a70;
+        color: #d64a70;
+        box-shadow: none;
+        background-color: #fff5f8;
+        }
+        
+        body.light-mode .cyberpunk-btn-pink:hover {
+        background-color: #ffe6ee;
+        box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+        }
+        
+        body.light-mode .cyberpunk-title {
+        color: #4a6fa5;
+        text-shadow: none;
+        }
+        
+        body.light-mode .cyberpunk-input, 
+        body.light-mode .cyberpunk-select {
+        background-color: #ffffff;
+        border: 1px solid #dddddd;
+        color: #333333;
+        box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        body.light-mode .cyberpunk-subtitle {
+        color: #d64a70;
+        text-shadow: none;
+        }
+        
+        body.light-mode .bg-black {
+        background-color: #ffffff !important;
+        }
+        
+        body.light-mode pre {
+        color: #333333;
+        background-color: #f5f5f5 !important;
+        }
+        
+        body.light-mode .text-blue-300,
+        body.light-mode .text-blue-400 {
+        color: #4a6fa5;
+        }
+        
+        body.light-mode .grid-pattern {
+        display: none;
+        }
+        
+        body.light-mode .scanline {
+        display: none;
+        }
+        
+        body.light-mode pre::-webkit-scrollbar-track {
+        background: #f0f0f0;
+        }
+        
+        body.light-mode pre::-webkit-scrollbar-thumb {
+        background: #cccccc;
+        }
+        
+        body.light-mode pre::-webkit-scrollbar-thumb:hover {
+        background: #bbbbbb;
+        }
+        .cyberpunk-btn-pink:hover {
+            background-color: rgba(255, 42, 109, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px #ff2a6d, 0 0 30px rgba(255, 42, 109, 0.7);
+        }
+        
+        .cyberpunk-input {
+            background-color: rgba(5, 7, 15, 0.7);
+            border: 1px solid var(--neon-blue);
+            color: white;
+            box-shadow: inset 0 0 5px rgba(0, 240, 255, 0.3);
+        }
+        
+        .cyberpunk-input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.3), inset 0 0 5px rgba(0, 240, 255, 0.3);
+            outline: none;
+        }
+        
+        .cyberpunk-select {
+            background-color: rgba(5, 7, 15, 0.7);
+            border: 1px solid var(--neon-blue);
+            color: white;
+            box-shadow: inset 0 0 5px rgba(0, 240, 255, 0.3);
+            appearance: none;
+        }
+        
+        .cyberpunk-select:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 0 2px rgba(0, 240, 255, 0.3), inset 0 0 5px rgba(0, 240, 255, 0.3);
+            outline: none;
+        }
+        
+        .cyberpunk-title {
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px var(--neon-blue), 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        
+        .cyberpunk-subtitle {
+            color: var(--neon-pink);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px var(--neon-pink), 0 0 10px rgba(255, 42, 109, 0.5);
+        }
+        
         .fade-in {
             animation: fadeIn 1s ease-in-out;
         }
+        
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
         }
         
-        /* Dark mode transitions */
-        .transition-colors {
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 15;
+            opacity: 0.15;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 240, 255, 0.2) 51%,
+                transparent 51%
+            );
+            background-size: 100% 4px;
+            animation: scanline 6s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 0 100%;
+            }
         }
         
         /* Custom scrollbar for code block */
@@ -25,36 +255,52 @@
             height: 8px;
         }
         pre::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .dark pre::-webkit-scrollbar-track {
-            background: #2d3748;
+            background: rgba(5, 7, 15, 0.5);
         }
         pre::-webkit-scrollbar-thumb {
-            background: #cbd5e0;
-            border-radius: 4px;
-        }
-        .dark pre::-webkit-scrollbar-thumb {
-            background: #4a5568;
+            background: var(--neon-blue);
+            border-radius: 0;
         }
         pre::-webkit-scrollbar-thumb:hover {
-            background: #a0aec0;
+            background: #80f7ff;
         }
-        .dark pre::-webkit-scrollbar-thumb:hover {
-            background: #718096;
+        
+        /* Grid pattern */
+        .grid-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: none;
+            z-index: -1;
         }
-    </style>
+        
+        .mode-toggle-icon {
+            filter: drop-shadow(0 0 2px var(--neon-blue));
+        }
+        </style>
+   
 </head>
-<body class="min-h-screen p-4 md:p-8 transition-colors" id="body">
+
+<body class="min-h-screen p-4 md:p-8">
+    <!-- Grid Pattern -->
+    <div class="grid-pattern"></div>
+    
+    <!-- Scanline Effect -->
+    <div class="scanline"></div>
+
     <!-- Dark Mode Toggle -->
     <div class="fixed top-4 right-4 z-10">
-        <button id="darkModeToggle" class="bg-gray-200 dark:bg-gray-700 rounded-full p-2 shadow-md hover:shadow-lg transition-all">
-            <!-- Sun icon (visible in dark mode) -->
-            <svg id="lightIcon" class="w-6 h-6 text-yellow-500 hidden" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <button id="darkModeToggle" class="bg-transparent rounded-full p-2 cyberpunk-border">
+            <svg id="lightIcon" class="w-6 h-6 text-yellow-500 hidden mode-toggle-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clip-rule="evenodd"></path>
             </svg>
-            <!-- Moon icon (visible in light mode) -->
-            <svg id="darkIcon" class="w-6 h-6 text-gray-700" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <svg id="darkIcon" class="w-6 h-6 text-blue-400 mode-toggle-icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
             </svg>
         </button>
@@ -63,31 +309,31 @@
     <div class="max-w-7xl mx-auto">
         <!-- Header Section -->
         <div class="text-center mb-10">
-            <h1 class="text-4xl font-extrabold text-gray-800 dark:text-gray-100 mb-2 transition-colors">UML Diagram Generator</h1>
-            <p class="text-gray-600 dark:text-gray-400 transition-colors">Create professional UML diagrams with ease</p>
+            <h1 class="text-4xl font-extrabold mb-2 cyberpunk-title">UML DIAGRAM </h1>
+            <p class="cyberpunk-subtitle">"No worries—let's create the diagram in any language you know!"</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <!-- Input Form Section -->
-            <div class="lg:col-span-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors">
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6 transition-colors">Configuration</h2>
+            <div class="lg:col-span-4 cyberpunk-border rounded-md p-6 bg-opacity-20 bg-black">
+                <h2 class="text-2xl font-bold mb-6 cyberpunk-title">CONFIGURATION</h2>
                 <form id="diagramForm" class="space-y-6">
                     <div>
-                        <label for="project_name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Project Description </label>
+                        <label for="project_name" class="block text-sm font-medium text-blue-300 mb-1">PROJECT DESCRIPTION</label>
                         <input type="text" id="project_name" name="project_name" required
-                               class="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 transition-colors">
+                               class="block w-full px-4 py-3 rounded-md cyberpunk-input">
                     </div>
                     
                     <div>
-                        <label for="diagram_type" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Diagram Type</label>
+                        <label for="diagram_type" class="block text-sm font-medium text-blue-300 mb-1">DIAGRAM TYPE</label>
                         <div class="relative">
                             <select id="diagram_type" name="diagram_type" required
-                                    class="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 appearance-none transition-colors">
+                                    class="block w-full px-4 py-3 rounded-md cyberpunk-select">
                                 {% for type in diagram_types %}
                                 <option value="{{ type }}">{{ type }}</option>
                                 {% endfor %}
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-300">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                 </svg>
@@ -96,16 +342,16 @@
                     </div>
     
                     <div>
-                        <label for="theme" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 transition-colors">Theme</label>
+                        <label for="theme" class="block text-sm font-medium text-blue-300 mb-1">THEME</label>
                         <div class="relative">
                             <select id="theme" name="theme"
-                                    class="block w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 appearance-none transition-colors">
-                                <option value="">Default Theme</option>
+                                    class="block w-full px-4 py-3 rounded-md cyberpunk-select">
+                                <option value="">DEFAULT THEME</option>
                                 {% for theme in themes %}
                                 <option value="{{ theme }}">{{ theme }}</option>
                                 {% endfor %}
                             </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 dark:text-gray-300">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-300">
                                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                 </svg>
@@ -113,68 +359,83 @@
                         </div>
                     </div>
                     
-                    <button type="submit" 
-                            class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-[1.02]">
+                    <button type="submit" class="w-full py-3 px-4 rounded-md cyberpunk-btn">
                         <div class="flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                             </svg>
-                            Generate Diagram
+                            GENERATE DIAGRAM
                         </div>
                     </button>
                 </form>
             </div>
             
             <!-- Results Section -->
-            <div id="results" class="lg:col-span-8 space-y-6">
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors">
-                    <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 space-y-4 md:space-y-0">
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 transition-colors">Generated Diagram</h2>
-                        <button id="downloadButton" 
-                                class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-[1.02] flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                            </svg>
-                            Download Diagram
-                        </button>
-                    </div>
-                    <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 flex items-center justify-center transition-colors">
-                        <img id="diagram" class="max-w-full h-auto fade-in rounded-lg shadow-md" alt="Generated UML Diagram">
-                    </div>
-                </div>
-                
-                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors">
-                    <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 space-y-4 md:space-y-0">
-                        <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100 transition-colors">PlantUML Syntax</h2>
-                        <button id="copyButton" 
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 transform hover:scale-[1.02] flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
-                            </svg>
-                            Copy Code
-                        </button>
-                    </div>
-                    <pre id="syntax" class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-300 p-6 rounded-lg overflow-x-auto shadow-inner border border-gray-200 dark:border-gray-700 transition-colors font-mono text-sm"></pre>
-                </div>
+           <!-- Results Section -->
+<div id="results" class="lg:col-span-8 space-y-6">
+    <div class="cyberpunk-border rounded-md p-6 bg-opacity-20 bg-black">
+        <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 space-y-4 md:space-y-0">
+            <h2 class="text-2xl font-bold cyberpunk-title"> DIAGRAM</h2>
+            <button id="downloadButton" class="py-2 px-4 rounded-md cyberpunk-btn-pink flex items-center justify-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                DOWNLOAD
+            </button>
+        </div>
+        <div class="bg-opacity-20 bg-black rounded-md p-4 flex items-center justify-center cyberpunk-border">
+            <img id="diagram" class="max-w-full h-auto fade-in rounded-md" alt="Generated UML Diagram">
+        </div>
+    </div>
+    
+    <div class="cyberpunk-border rounded-md p-6 bg-opacity-20 bg-black">
+        <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 space-y-4 md:space-y-0">
+            <h2 class="text-2xl font-bold cyberpunk-title"> CODE EDITOR</h2>
+            <div class="flex space-x-3">
+                <button id="editButton" class="py-2 px-4 rounded-md cyberpunk-btn-pink flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                    </svg>
+                    EDIT CODE
+                </button>
+                <button id="submitButton" class="py-2 px-4 rounded-md cyberpunk-btn flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    DEBUG & UPDATE
+                </button>
+                <button id="copyButton" class="py-2 px-4 rounded-md cyberpunk-btn flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                    </svg>
+                    COPY CODE
+                </button>
             </div>
+        </div>
+        <div id="syntaxContainer" class="bg-opacity-20 bg-black rounded-md cyberpunk-border">
+            <pre id="syntax" class="text-blue-300 p-6 rounded-md overflow-x-auto font-mono text-sm"></pre>
+            <textarea id="syntaxEditor" class="hidden w-full text-blue-300 p-6 rounded-md font-mono text-sm bg-opacity-20 bg-black border-0 focus:ring-0 focus:outline-none" style="min-height: 200px;"></textarea>
+        </div>
+    </div>
+</div>
         </div>
 
         <!-- Loading indicator -->
-        <div id="loading" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-xl p-6 max-w-sm w-full flex flex-col items-center transition-colors">
-                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600 dark:border-indigo-400 mb-4"></div>
-                <span class="text-gray-700 dark:text-gray-300 text-lg font-medium">Generating diagram...</span>
+        <div id="loading" class="hidden fixed inset-0 bg-black bg-opacity-70 flex justify-center items-center z-50">
+            <div class="cyberpunk-border rounded-md p-6 max-w-sm w-full flex flex-col items-center bg-opacity-90 bg-black">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-400 mb-4"></div>
+                <span class="text-blue-400 text-lg font-medium">GENERATING DIAGRAM...</span>
             </div>
         </div>
 
         <!-- Error message -->
-        <div id="error" class="hidden fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:bottom-8 md:-translate-x-1/2 bg-red-500 text-white p-4 rounded-lg shadow-lg max-w-md z-50">
+        <div id="error" class="hidden fixed bottom-4 left-4 right-4 md:left-1/2 md:right-auto md:bottom-8 md:-translate-x-1/2 cyberpunk-border-pink p-4 rounded-md max-w-md z-50 bg-opacity-90 bg-black">
             <div class="flex items-start">
-                <svg class="w-6 h-6 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-6 h-6 mr-3 flex-shrink-0 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <span id="errorMessage" class="flex-1"></span>
-                <button class="ml-4 text-white focus:outline-none" onclick="document.getElementById('error').classList.add('hidden')">
+                <span id="errorMessage" class="flex-1 text-pink-500"></span>
+                <button class="ml-4 text-pink-500 focus:outline-none" onclick="document.getElementById('error').classList.add('hidden')">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
@@ -183,58 +444,140 @@
         </div>
 
         <!-- Success Pop-up Messages -->
-        <div id="message" class="hidden fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded-lg shadow-lg max-w-md z-50 animate-bounce">
+        <div id="message" class="hidden fixed bottom-4 right-4 cyberpunk-border p-4 rounded-md max-w-md z-50 bg-opacity-90 bg-black">
             <div class="flex items-center">
-                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-6 h-6 mr-3 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <span id="messageText" class="flex-1"></span>
+                <span id="messageText" class="flex-1 text-blue-400"></span>
             </div>
         </div>
     </div>
 
     <script>
         // Dark mode toggle functionality
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        const body = document.getElementById('body');
-        const darkIcon = document.getElementById('darkIcon');
-        const lightIcon = document.getElementById('lightIcon');
+   // Dark mode toggle functionality
+   // Add this to your existing JavaScript section
+
+// Variables for editing mode
+let isEditing = false;
+const syntaxDisplay = document.getElementById('syntax');
+const syntaxEditor = document.getElementById('syntaxEditor');
+const editButton = document.getElementById('editButton');
+const submitButton = document.getElementById('submitButton');
+
+// Edit button handler
+document.getElementById('editButton').addEventListener('click', () => {
+    if (!isEditing) {
+        // Switch to edit mode
+        syntaxEditor.value = syntaxDisplay.textContent;
+        syntaxDisplay.classList.add('hidden');
+        syntaxEditor.classList.remove('hidden');
+        editButton.innerHTML = `
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            DONE EDITING
+        `;
+        isEditing = true;
+    } else {
+        // Switch back to display mode
+        syntaxDisplay.textContent = syntaxEditor.value;
+        syntaxEditor.classList.add('hidden');
+        syntaxDisplay.classList.remove('hidden');
+        editButton.innerHTML = `
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+            </svg>
+            EDIT CODE
+        `;
+        isEditing = false;
+    }
+});
+
+// Submit button for debugging and updating
+document.getElementById('submitButton').addEventListener('click', async () => {
+    // Show loading indicator
+    const loading = document.getElementById('loading');
+    const error = document.getElementById('error');
+    loading.classList.remove('hidden');
+    error.classList.add('hidden');
+    
+    try {
+        // Get the current syntax (either from editor if in edit mode, or from display)
+        const syntax = isEditing ? syntaxEditor.value : syntaxDisplay.textContent;
         
-        // Check for saved user preference or use system preference
-        const isDarkMode = localStorage.getItem('darkMode') === 'true' || 
-                          (localStorage.getItem('darkMode') === null && 
-                           window.matchMedia('(prefers-color-scheme: dark)').matches);
-        
-        // Initialize dark mode based on preference
-        if (isDarkMode) {
-            enableDarkMode();
-        }
-        
-        // Toggle dark mode
-        darkModeToggle.addEventListener('click', () => {
-            if (body.classList.contains('dark')) {
-                disableDarkMode();
-            } else {
-                enableDarkMode();
-            }
+        // Send to backend for debugging
+        const response = await fetch('/debug_syntax', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ syntax: syntax })
         });
         
-        function enableDarkMode() {
-            body.classList.add('dark');
-            body.classList.add('bg-gray-900');
-            darkIcon.classList.add('hidden');
-            lightIcon.classList.remove('hidden');
-            localStorage.setItem('darkMode', 'true');
-        }
+        const data = await response.json();
         
-        function disableDarkMode() {
-            body.classList.remove('dark');
-            body.classList.remove('bg-gray-900');
-            body.classList.add('bg-gray-100');
-            darkIcon.classList.remove('hidden');
-            lightIcon.classList.add('hidden');
-            localStorage.setItem('darkMode', 'false');
+        if (response.ok) {
+            // Update the diagram and syntax
+            document.getElementById('diagram').src = `data:image/png;base64,${data.diagram}`;
+            
+            // Update the syntax display or editor based on current mode
+            if (isEditing) {
+                syntaxEditor.value = data.syntax;
+            } else {
+                syntaxDisplay.textContent = data.syntax;
+            }
+            
+            // Show success message
+            const message = document.getElementById('message');
+            const messageText = document.getElementById('messageText');
+            messageText.textContent = "DIAGRAM UPDATED SUCCESSFULLY";
+            message.classList.remove('hidden');
+            setTimeout(() => message.classList.add('hidden'), 3000);
+        } else {
+            throw new Error(data.error || 'Failed to debug and update diagram');
         }
+    } catch (err) {
+        error.classList.remove('hidden');
+        document.getElementById('errorMessage').textContent = err.message;
+    } finally {
+        loading.classList.add('hidden');
+    }
+});
+const darkModeToggle = document.getElementById('darkModeToggle');
+const darkIcon = document.getElementById('darkIcon');
+const lightIcon = document.getElementById('lightIcon');
+
+// Check for saved theme preference or default to dark mode
+let isDarkMode = localStorage.getItem('darkMode') !== 'light';
+
+// Initial theme setup
+setThemeMode(isDarkMode);
+
+// Toggle theme when button is clicked
+darkModeToggle.addEventListener('click', () => {
+    isDarkMode = !isDarkMode;
+    setThemeMode(isDarkMode);
+    localStorage.setItem('darkMode', isDarkMode ? 'dark' : 'light');
+});
+
+// Function to set the theme mode
+function setThemeMode(isDark) {
+    if (isDark) {
+        // Dark mode
+        document.body.classList.add('dark-mode');
+        document.body.classList.remove('light-mode');
+        darkIcon.classList.remove('hidden');
+        lightIcon.classList.add('hidden');
+    } else {
+        // Light mode
+        document.body.classList.add('light-mode');
+        document.body.classList.remove('dark-mode');
+        darkIcon.classList.add('hidden');
+        lightIcon.classList.remove('hidden');
+    }
+}
 
         // Form submission handler
         document.getElementById('diagramForm').addEventListener('submit', async (e) => {
@@ -264,7 +607,7 @@
                     document.getElementById('diagram').src = `data:image/png;base64,${data.diagram}`;
                     document.getElementById('syntax').textContent = data.syntax;
                     results.classList.remove('hidden');
-                    messageText.textContent = "Diagram generated successfully!";
+                    messageText.textContent = "DIAGRAM GENERATED SUCCESSFULLY";
                     message.classList.remove('hidden');
                     setTimeout(() => message.classList.add('hidden'), 3000);
                 } else {
@@ -289,20 +632,16 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
-                    Copied!
+                    COPIED!
                 `;
-                button.classList.remove('bg-blue-600', 'hover:bg-blue-700');
-                button.classList.add('bg-green-600', 'hover:bg-green-700');
                 setTimeout(() => {
                     button.innerHTML = originalHTML;
-                    button.classList.remove('bg-green-600', 'hover:bg-green-700');
-                    button.classList.add('bg-blue-600', 'hover:bg-blue-700');
                 }, 2000);
                 
                 // Show success message
                 const message = document.getElementById('message');
                 const messageText = document.getElementById('messageText');
-                messageText.textContent = "Code copied to clipboard!";
+                messageText.textContent = "CODE COPIED TO CLIPBOARD";
                 message.classList.remove('hidden');
                 setTimeout(() => message.classList.add('hidden'), 3000);
             } catch (err) {
@@ -323,7 +662,7 @@
             // Show success message
             const message = document.getElementById('message');
             const messageText = document.getElementById('messageText');
-            messageText.textContent = "Diagram downloaded successfully!";
+            messageText.textContent = "DIAGRAM DOWNLOADED SUCCESSFULLY";
             message.classList.remove('hidden');
             setTimeout(() => message.classList.add('hidden'), 3000);
         });
