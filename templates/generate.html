@@ -310,7 +310,7 @@
         <!-- Header Section -->
         <div class="text-center mb-10">
             <h1 class="text-4xl font-extrabold mb-2 cyberpunk-title">UML DIAGRAM </h1>
-            <p class="cyberpunk-subtitle">"No worries—let's create the diagram in any language you know!"</p>
+            <p class="cyberpunk-subtitle">"No worries—let's create the diagram in the language you know!"</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -380,7 +380,7 @@
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                 </svg>
-                DOWNLOAD
+                EXPORT
             </button>
         </div>
         <div class="bg-opacity-20 bg-black rounded-md p-4 flex items-center justify-center cyberpunk-border">
@@ -396,7 +396,7 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
-                    EDIT CODE
+                    Modify Code
                 </button>
                 <button id="submitButton" class="py-2 px-4 rounded-md cyberpunk-btn flex items-center justify-center">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -477,7 +477,9 @@ document.getElementById('editButton').addEventListener('click', () => {
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
             </svg>
-            DONE EDITING
+            Apply Changes
+
+
         `;
         isEditing = true;
     } else {
@@ -489,7 +491,7 @@ document.getElementById('editButton').addEventListener('click', () => {
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
             </svg>
-            EDIT CODE
+            Modify Code
         `;
         isEditing = false;
     }
@@ -650,22 +652,35 @@ function setThemeMode(isDark) {
         });
 
         // Download diagram button
-        document.getElementById('downloadButton').addEventListener('click', () => {
-            const img = document.getElementById('diagram');
-            const link = document.createElement('a');
-            link.download = 'diagram.png';
-            link.href = img.src;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            // Show success message
-            const message = document.getElementById('message');
-            const messageText = document.getElementById('messageText');
-            messageText.textContent = "DIAGRAM DOWNLOADED SUCCESSFULLY";
-            message.classList.remove('hidden');
-            setTimeout(() => message.classList.add('hidden'), 3000);
-        });
+      // Download diagram button
+document.getElementById('downloadButton').addEventListener('click', () => {
+    // Download diagram image
+    const img = document.getElementById('diagram');
+    const imgLink = document.createElement('a');
+    imgLink.download = 'UML_DIAGRAM.png';
+    imgLink.href = img.src;
+    document.body.appendChild(imgLink);
+    imgLink.click();
+    document.body.removeChild(imgLink);
+    
+    // Download syntax code as txt file
+    const syntax = isEditing ? document.getElementById('syntaxEditor').value : document.getElementById('syntax').textContent;
+    const textBlob = new Blob([syntax], {type: 'text/plain'});
+    const textLink = document.createElement('a');
+    textLink.download = 'UML_CODE.txt';
+    textLink.href = URL.createObjectURL(textBlob);
+    document.body.appendChild(textLink);
+    textLink.click();
+    document.body.removeChild(textLink);
+    URL.revokeObjectURL(textLink.href);
+    
+    // Show success message
+    const message = document.getElementById('message');
+    const messageText = document.getElementById('messageText');
+    messageText.textContent = "DIAGRAM AND CODE DOWNLOADED SUCCESSFULLY";
+    message.classList.remove('hidden');
+    setTimeout(() => message.classList.add('hidden'), 3000);
+});
     </script>
 </body>
 </html>

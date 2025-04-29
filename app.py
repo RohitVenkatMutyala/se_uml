@@ -6,6 +6,8 @@ import os
 import logging
 from functools import wraps
 import plantuml
+from datetime import datetime
+import difflib
 import base64
 import json
 
@@ -106,33 +108,6 @@ def generate_ai_prompt(project_name, diagram_type, theme=None):
     Start with @startuml
     {theme_directive}"""
 
-def get_diagram_type_from_notation(syntax):
-    """Extract diagram type from PlantUML notation markers."""
-    syntax_lower = syntax.lower()
-    
-    # Check for specific PlantUML notation indicators
-    if '!sequence' in syntax_lower or 'participant' in syntax_lower or 'actor ->' in syntax_lower or '->' in syntax_lower and '-->' in syntax_lower:
-        return "Sequence Diagram"
-    elif '!usecase' in syntax_lower or 'usecase' in syntax_lower or 'actor :' in syntax_lower:
-        return "Use Case Diagram"
-    elif '!class' in syntax_lower or 'class ' in syntax_lower or 'interface ' in syntax_lower:
-        return "Class Diagram"
-    elif '!object' in syntax_lower or 'object ' in syntax_lower:
-        return "Object Diagram"
-    elif '!activity' in syntax_lower or 'start' in syntax_lower and 'end' in syntax_lower or 'if (' in syntax_lower:
-        return "Activity Diagram"
-    elif '!component' in syntax_lower or 'component ' in syntax_lower:
-        return "Component Diagram"
-    elif '!deployment' in syntax_lower or 'node ' in syntax_lower:
-        return "Deployment Diagram"
-    elif '!state' in syntax_lower or 'state ' in syntax_lower:
-        return "State Diagram"
-    elif '!timing' in syntax_lower or 'clock ' in syntax_lower:
-        return "Timing Diagram"
-    
-    # Default to Class Diagram if no specific notation is found
-    return "Class Diagram"
-
 def generate_ai_prompt_from_description(description, diagram_type=None):
     """Generate a prompt for the AI based on natural language description."""
     diagram_type_info = f"for a {diagram_type} diagram" if diagram_type else ""
@@ -154,10 +129,6 @@ def process_embedded_descriptions(syntax):
     if len(syntax) < 30 or not re.search(pattern, syntax):
         return syntax
     
-    # Determine the diagram type from syntax notation
-    diagram_type = get_diagram_type_from_notation(syntax)
-    logger.info(f"Detected diagram type from notation: {diagram_type}")
-    
     # Find all matches
     matches = re.finditer(pattern, syntax)
     modified_syntax = syntax
@@ -168,6 +139,17 @@ def process_embedded_descriptions(syntax):
         words = description.split()
         if len(words) > 5:  # A heuristic to identify sentences vs. labels
             logger.info(f"Processing embedded description: {description[:50]}...")
+            
+            # Determine diagram type based on context if possible
+            diagram_type = None
+            if "class" in description.lower():
+                diagram_type = "Class"
+            elif "sequence" in description.lower() or "flow" in description.lower():
+                diagram_type = "Sequence"
+            elif "use case" in description.lower():
+                diagram_type = "Use Case"
+            elif "activity" in description.lower():
+                diagram_type = "Activity"
             
             # Generate PlantUML code for this description
             prompt = generate_ai_prompt_from_description(description, diagram_type)
@@ -335,7 +317,6 @@ def process_description():
         'diagram': diagram_base64,
         'syntax': plantuml_syntax
     })
-
 @app.route('/debug_syntax', methods=['POST'])
 @handle_errors
 def debug_syntax():
@@ -380,14 +361,9 @@ def debug_syntax():
     
     # If no descriptions were found or processing failed, debug the syntax
     logger.info("No descriptions found or processing failed, debugging syntax")
-    
-    # Determine diagram type from notation before debugging
-    diagram_type = get_diagram_type_from_notation(syntax)
-    logger.info(f"Detected diagram type from notation for debugging: {diagram_type}")
-    
-    # Generate AI prompt for debugging with diagram type context
-    prompt = f"""Debug and correct the following PlantUML syntax for a {diagram_type} to ensure it works properly.
-    If there are any errors, fix them. If the syntax is valid, optimize it for better readability.
+    # Generate AI prompt for debugging
+    prompt = f"""Debug and correct the following PlantUML syntax to ensure it works properly.
+    If there are any errors,and write in the comments where it changed and then fix them. If the syntax is valid, optimize it for better readability.
     Return only the corrected PlantUML syntax without any additional text or explanations.
     
     ```
@@ -413,6 +389,5 @@ def debug_syntax():
     except Exception as e:
         logger.error(f"Debug Syntax Error: {str(e)}")
         return jsonify({'error': str(e)}), 500
-
 if __name__ == '__main__':
     app.run(debug=True)
